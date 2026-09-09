@@ -1,1 +1,63 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NOUSA AI</title><style>body{margin:0;background:#070910;color:#fff;font-family:Arial,sans-serif}main{max-width:900px;margin:auto;padding:50px 20px}h1{text-align:center;font-size:64px}h1 span{color:#42a8ff}.tag{text-align:center;color:#9aa7ba}.card{margin:28px 0;padding:24px;background:#0d131f;border:1px solid #ffffff18;border-radius:18px}.center{text-align:center}.chat{height:400px;overflow:auto}.msg{padding:14px;margin:10px 0;background:#141c2b;border-radius:12px;white-space:pre-wrap}.you{margin-left:15%;background:#123052}.composer{display:flex;gap:10px}input{flex:1;padding:14px;background:#080d16;color:#fff;border:1px solid #28354b;border-radius:10px}button{padding:14px 20px;border:0;border-radius:10px;background:#167dff;color:#fff;font-weight:bold}.tools{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.tool{padding:18px;text-align:center;background:#111827;border-radius:12px}@media(max-width:600px){h1{font-size:48px}.tools{grid-template-columns:repeat(2,1fr)}}</style></head><body><main><h1>NOUSA <span>AI</span></h1><p class="tag">Imagine • Create • Inspire</p><div class="card center"><b>Short form:</b> NOUSA AI<br><br><b>Full form:</b> Next-Generation Online Utility &amp; Smart AI</div><div class="card"><h2>🤖 NOUSA AI Assistant</h2><div class="chat" id="chat"><div class="msg"><b>NOUSA AI</b><br>Hi! Ask me anything.</div></div><div class="composer"><input id="p" placeholder="Message NOUSA AI..." onkeydown="if(event.key==='Enter')send()"><button id="b" onclick="send()">Send</button></div></div><div class="card"><h2>Creative Tools</h2><div class="tools"><div class="tool">🎨<br>Image Studio</div><div class="tool">🎬<br>Video Studio</div><div class="tool">🎵<br>Music Studio</div><div class="tool">📱<br>App Builder</div></div></div></main><script>const history=[];function esc(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}async function send(){let p=document.getElementById('p'),b=document.getElementById('b'),c=document.getElementById('chat'),v=p.value.trim();if(!v||b.disabled)return;c.innerHTML+='<div class="msg you"><b>You</b><br>'+esc(v)+'</div>';history.push({role:'user',content:v});p.value='';b.disabled=true;b.textContent='...';try{let r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history})}),d=await r.json();if(!r.ok)throw Error(d.error||'Request failed');c.innerHTML+='<div class="msg"><b>NOUSA AI</b><br>'+esc(d.text||'No response returned.')+'</div>';history.push({role:'assistant',content:d.text||''})}catch(e){c.innerHTML+='<div class="msg"><b>NOUSA AI</b><br>'+esc(e.message)+'</div>}b.disabled=false;b.textContent='Send';c.scrollTop=c.scrollHeight}</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NOUSA AI</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#07070a;color:#fff;min-height:100vh}main{max-width:900px;margin:auto;padding:32px 18px}.brand{font-size:42px;font-weight:800;letter-spacing:-1px}.tag{color:#aaa;margin:4px 0 28px}.card{background:#111217;border:1px solid #292b34;border-radius:22px;padding:18px;box-shadow:0 10px 40px #0005}.chat{height:420px;overflow:auto;padding:8px}.msg{padding:12px 14px;margin:10px 0;border-radius:15px;line-height:1.5;white-space:pre-wrap}.user{background:#22242d;margin-left:12%}.ai{background:#171921;margin-right:12%}.error{background:#351519;border:1px solid #7b3038;color:#ffd9dc}.row{display:flex;gap:10px;margin-top:12px}input{flex:1;background:#0b0c10;border:1px solid #343640;color:#fff;border-radius:14px;padding:14px;font-size:16px;outline:none}button{border:0;border-radius:14px;padding:0 22px;background:#fff;color:#000;font-weight:800;font-size:16px;cursor:pointer}button:disabled{opacity:.55}.tools{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}.tool{border:1px solid #292b34;border-radius:14px;padding:15px;text-align:center;color:#bbb}@media(max-width:650px){.brand{font-size:34px}.tools{grid-template-columns:repeat(2,1fr)}.chat{height:380px}.user{margin-left:3%}.ai{margin-right:3%}}
+</style>
+</head>
+<body>
+<main>
+  <div class="brand">NOUSA AI</div>
+  <div class="tag">Next-Generation Online Utility &amp; Smart AI</div>
+  <section class="card">
+    <div id="chat" class="chat">
+      <div class="msg ai"><b>NOUSA AI</b><br>Hello! I'm NOUSA AI. Ask me anything.</div>
+    </div>
+    <div class="row">
+      <input id="input" autocomplete="off" placeholder="Message NOUSA AI...">
+      <button id="send" type="button">Send</button>
+    </div>
+    <div id="tools" class="tools">
+      <div class="tool">🖼️ Image Studio</div><div class="tool">🎬 Video Studio</div><div class="tool">🎵 Music Studio</div><div class="tool">💻 App Builder</div>
+    </div>
+  </section>
+</main>
+<script>
+const chat=document.getElementById('chat');
+const input=document.getElementById('input');
+const send=document.getElementById('send');
+const history=[];
+function esc(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+function add(text,cls){const d=document.createElement('div');d.className='msg '+cls;d.innerHTML=esc(text);chat.appendChild(d);chat.scrollTop=chat.scrollHeight;return d}
+async function sendMessage(){
+  const text=input.value.trim();
+  if(!text||send.disabled)return;
+  input.value='';
+  add(text,'user');
+  history.push({role:'user',content:text});
+  send.disabled=true;send.textContent='Sending...';
+  const thinking=add('Thinking...','ai');
+  try{
+    const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history})});
+    const raw=await r.text();
+    let data;try{data=JSON.parse(raw)}catch{throw new Error(`Server returned HTTP ${r.status}, but not JSON. Raw response: ${raw.slice(0,500)}`)}
+    if(!r.ok||data.ok===false){
+      const detail=data.details?`\nDetails: ${data.details}`:'';
+      throw new Error(`${data.error||'Request failed'}${detail}`);
+    }
+    thinking.remove();
+    add(data.text||'NOUSA AI returned an empty response.','ai');
+    history.push({role:'assistant',content:data.text||''});
+  }catch(e){
+    thinking.remove();
+    add('❌ '+(e.message||String(e)),'error');
+  }finally{send.disabled=false;send.textContent='Send';input.focus()}
+}
+send.addEventListener('click',sendMessage);
+input.addEventListener('keydown',e=>{if(e.key==='Enter')sendMessage()});
+</script>
+</body>
+</html>
