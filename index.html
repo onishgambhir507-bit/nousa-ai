@@ -1,1 +1,61 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NOUSA AI</title><style>*{box-sizing:border-box}body{margin:0;background:#050507;color:#fff;font-family:Arial}.wrap{max-width:1100px;margin:auto;padding:28px 18px}h1{font-size:44px;margin:0}.sub{color:#aaa;margin:5px 0 22px}.card{background:#111217;border:1px solid #2b2d35;border-radius:22px;padding:20px}.subjects{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}.subject,.tool{background:#171920;color:#eee;border:1px solid #30323a;border-radius:13px;padding:13px;cursor:pointer}.subject.active{background:#282a32;border-color:#fff}.chat{min-height:330px;max-height:55vh;overflow:auto;margin-top:15px}.msg{padding:14px 16px;border-radius:16px;margin:10px 0;white-space:pre-wrap;line-height:1.5}.ai{background:#191b22}.user{background:#252833;margin-left:10%}.row{display:flex;gap:10px;margin-top:12px}textarea{flex:1;min-height:60px;background:#08090c;color:#fff;border:1px solid #353740;border-radius:14px;padding:16px;font-size:16px}.send{width:105px;border:0;border-radius:14px;font-weight:700;font-size:16px}.status{color:#aaa;font-size:13px;margin-top:8px}.tools{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:12px}@media(max-width:800px){.subjects{grid-template-columns:repeat(3,1fr)}.tools{grid-template-columns:repeat(2,1fr)}} </style></head><body><div class="wrap"><h1>NOUSA AI</h1><div class="sub">Next-Generation Online Utility & Smart AI</div><div class="card"><div class="subjects"><button class="subject active" data-s="General">🤖 General</button><button class="subject " data-s="Maths">➗ Maths</button><button class="subject " data-s="EVS">🌱 EVS</button><button class="subject " data-s="English">🔤 English</button><button class="subject " data-s="Hindi">🇮🇳 Hindi</button><button class="subject " data-s="Art & Craft">🎨 Art & Craft</button></div><div class="chat" id="chat"><div class="msg ai"><b>NOUSA AI</b><br>Choose a subject and ask me anything.</div></div><div class="row"><textarea id="input" placeholder="Ask NOUSA AI anything..."></textarea><button class="send" id="send">Send</button></div><div class="status" id="status">Subject: General</div><div class="tools"><div class="tool">🖼️ <b>Image Studio</b><br><small>AI image generation</small></div><div class="tool">🎬 <b>Video Studio</b><br><small>AI video generation</small></div><div class="tool">🎵 <b>Music Studio</b><br><small>Lyrics & music ideas</small></div><div class="tool">💻 <b>App Builder</b><br><small>Apps & code</small></div></div></div></div><script>let subject="General",history=[];const chat=document.getElementById("chat"),input=document.getElementById("input"),send=document.getElementById("send");function add(r,t){let d=document.createElement("div");d.className="msg "+(r==="user"?"user":"ai");d.textContent=(r==="user"?"You\n":"NOUSA AI\n")+t;chat.appendChild(d);chat.scrollTop=chat.scrollHeight}document.querySelectorAll(".subject").forEach(b=>b.onclick=()=>{document.querySelectorAll(".subject").forEach(x=>x.classList.remove("active"));b.classList.add("active");subject=b.dataset.s;document.getElementById("status").textContent="Subject: "+subject});async function go(){let q=input.value.trim();if(!q)return;add("user",q);input.value="";send.disabled=true;send.textContent="...";history.push({role:"user",content:q});try{let r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({subject,messages:history})}),x=await r.json();if(!r.ok)throw Error(x.details||x.error||"Request failed");if(!x.text)throw Error("AI returned no text");history.push({role:"assistant",content:x.text});add("assistant",x.text)}catch(e){add("assistant","❌ "+e.message)}finally{send.disabled=false;send.textContent="Send"}}send.onclick=go;input.onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();go()}};</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NOUSA AI</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#050507;color:#f5f5f7;font-family:Arial,sans-serif}
+.wrap{max-width:1100px;margin:auto;padding:25px 18px}h1{font-size:44px;margin:0}.sub{color:#aaa;margin:5px 0 20px}
+.card{background:#111217;border:1px solid #2c2e36;border-radius:22px;padding:20px;margin-bottom:14px}
+.subjects,.tools{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}
+button{cursor:pointer}.subject,.tool{background:#171920;color:#eee;border:1px solid #30323a;border-radius:13px;padding:13px 8px}.subject.active{background:#292b33;border-color:#fff}
+.chat{min-height:300px;max-height:50vh;overflow:auto;margin-top:15px}.msg{padding:14px 16px;border-radius:16px;margin:10px 0;line-height:1.5;white-space:pre-wrap}.ai{background:#191b22}.user{background:#252833;margin-left:10%}
+.row{display:flex;gap:10px;margin-top:12px}textarea{flex:1;min-height:60px;background:#08090c;color:#fff;border:1px solid #353740;border-radius:14px;padding:15px;font-size:16px}.send{width:105px;border:0;border-radius:14px;font-weight:bold}
+.tools{grid-template-columns:repeat(4,1fr);margin-top:12px}.tool{text-align:left}.tool button{margin-top:9px;background:#fff;color:#000;border:0;border-radius:10px;padding:9px 12px;font-weight:bold}
+.status{color:#aaa;font-size:13px;margin-top:8px;white-space:pre-wrap}#mediaOut img,#mediaOut video{max-width:100%;border-radius:14px;margin-top:12px}
+@media(max-width:800px){.subjects{grid-template-columns:repeat(3,1fr)}.tools{grid-template-columns:repeat(2,1fr)}.row{flex-direction:column}.send{width:100%}}
+</style>
+</head>
+<body><div class="wrap">
+<h1>NOUSA AI</h1><div class="sub">Next-Generation Online Utility & Smart AI</div>
+
+<div class="card">
+<div class="subjects" id="subjects">
+<button class="subject active" data-s="General">🤖 General</button>
+<button class="subject" data-s="Maths">➗ Maths</button>
+<button class="subject" data-s="EVS">🌱 EVS</button>
+<button class="subject" data-s="English">🔤 English</button>
+<button class="subject" data-s="Hindi">🇮🇳 Hindi</button>
+<button class="subject" data-s="Art & Craft">🎨 Art & Craft</button>
+</div>
+<div class="chat" id="chat"><div class="msg ai"><b>NOUSA AI</b><br>Choose a subject and ask me anything.</div></div>
+<div class="row"><textarea id="input" placeholder="Ask NOUSA AI anything..."></textarea><button class="send" id="send">Send</button></div>
+<div class="status" id="status">Subject: General</div>
+</div>
+
+<div class="card">
+<h2>🎨 Creation Studio</h2>
+<div class="tools">
+<div class="tool"><b>🖼️ Image Studio</b><br><small>Generate an AI image without OpenAI credits.</small><br><button onclick="imageStudio()">Open</button></div>
+<div class="tool"><b>🎬 Video Studio</b><br><small>Use a supported non-OpenAI video provider.</small><br><button onclick="videoStudio()">Open</button></div>
+<div class="tool"><b>🎵 Music Studio</b><br><small>Generate lyrics, song concepts and music prompts.</small><br><button onclick="musicStudio()">Use Chat</button></div>
+<div class="tool"><b>💻 App Builder</b><br><small>Generate app ideas and code.</small><br><button onclick="appStudio()">Use Chat</button></div>
+</div>
+<div id="mediaBox" style="display:none;margin-top:15px"><textarea id="mediaPrompt" placeholder="Describe what you want to create..."></textarea><button id="mediaBtn" onclick="generateMedia()">Generate</button><div class="status" id="mediaStatus"></div><div id="mediaOut"></div></div>
+</div>
+</div>
+
+<script>
+let subject="General",history=[];
+const chat=document.getElementById("chat"),input=document.getElementById("input"),send=document.getElementById("send");
+function add(role,text){let d=document.createElement("div");d.className="msg "+(role==="user"?"user":"ai");d.textContent=(role==="user"?"You\n":"NOUSA AI\n")+text;chat.appendChild(d);chat.scrollTop=chat.scrollHeight}
+document.querySelectorAll(".subject").forEach(b=>b.onclick=()=>{document.querySelectorAll(".subject").forEach(x=>x.classList.remove("active"));b.classList.add("active");subject=b.dataset.s;document.getElementById("status").textContent="Subject: "+subject;input.placeholder="Ask your "+subject+" question..."});
+async function go(){let q=input.value.trim();if(!q)return;add("user",q);input.value="";send.disabled=true;send.textContent="...";history.push({role:"user",content:q});try{let r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({subject,messages:history})});let x=await r.json();if(!r.ok)throw Error(x.details||x.error||"Request failed");if(!x.text)throw Error("AI returned no text");history.push({role:"assistant",content:x.text});add("assistant",x.text)}catch(e){add("assistant","❌ "+e.message)}finally{send.disabled=false;send.textContent="Send"}}
+send.onclick=go;input.onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();go()}};
+let mediaType="";
+function openMedia(type){mediaType=type;document.getElementById("mediaBox").style.display="block";document.getElementById("mediaPrompt").focus();document.getElementById("mediaStatus").textContent=type==="image"?"Image Studio ready.":"Video Studio ready.";document.getElementById("mediaOut").innerHTML=""}
+function imageStudio(){openMedia("image")}function videoStudio(){openMedia("video")}
+function musicStudio(){input.value="Help me create a complete song: lyrics, structure, mood and a music-generation prompt.";input.focus()}
+function appStudio(){input.value="Help me build an app. Give me the frontend, backend structure and code.";input.focus()}
+async function generateMedia(){let p=document.getElementById("mediaPrompt").value.trim(),s=document.getElementById("mediaStatus"),o=document.getElementById("mediaOut"),b=document.getElementById("mediaBtn");if(!p){s.textContent="Enter a prompt.";return}b.disabled=true;s.textContent="Generating...";o.innerHTML="";try{let r=await fetch("/api/"+mediaType,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:p})});let x=await r.json();if(!r.ok)throw Error(x.details||x.error||"Generation failed");if(x.type==="image")o.innerHTML='<img src="'+x.url+'" alt="Generated image">';else if(x.type==="video"&&x.url)o.innerHTML='<video controls src="'+x.url+'"></video>';s.textContent=x.message||((x.status||"completed")+" — finished")}catch(e){s.textContent="❌ "+e.message}finally{b.disabled=false}}
+</script></body></html>
