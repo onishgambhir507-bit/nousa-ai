@@ -1,18 +1,9 @@
-NOUSA AI - Image + Video Studio
-
-UPLOAD:
-1. Extract this ZIP.
-2. Upload index.html and _worker.js directly into the ROOT of the GitHub nousa-ai repository.
-3. Commit changes and wait for Cloudflare Pages deployment.
-
-Required Cloudflare Production secret:
-OPENAI_API_KEY
-
-Optional variables:
-OPENAI_MODEL (default: gpt-5.6-luna)
-OPENAI_IMAGE_MODEL (default: gpt-image-2)
-OPENAI_VIDEO_MODEL (default: sora-2)
-
-Diagnostics:
-/api/health
-/api/status
+NOUSA AI - OpenAI-independent media package
+1. Put index.html and _worker.js in GitHub repository root.
+2. In Cloudflare Pages -> Settings -> Variables and Secrets -> Production, add:
+   Name: HF_TOKEN
+   Value: your Hugging Face User Access Token with Inference Providers permission.
+3. Optional:
+   HF_IMAGE_MODEL = black-forest-labs/FLUX.1-schnell
+   HF_VIDEO_MODEL = your supported text-to-video model/provider.
+Important: This removes the dependency on OpenAI credits, but it does NOT make unlimited generation free. Hugging Face currently provides a small monthly free credit allowance to free users; video providers may have separate quotas/pricing.
