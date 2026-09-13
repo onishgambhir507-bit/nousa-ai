@@ -11,7 +11,10 @@ if(request.method!=="POST")return Response.json({error:"Method not allowed"},{st
 let b;try{b=await request.json()}catch{return Response.json({error:"Invalid JSON."},{status:400})}if(!b.prompt)return Response.json({error:"Please enter a prompt."},{status:400});
 const prompt=String(b.prompt).slice(0,2000);
 async function asDataUrl(buf,ct){let a=new Uint8Array(buf),bin="";for(let i=0;i<a.length;i+=32768)bin+=String.fromCharCode(...a.subarray(i,i+32768));return "data:"+ct+";base64,"+btoa(bin)}
-async function providerCall(provider,model,payload){const url=`https://router.huggingface.co/${provider}/models/${model}`;return fetch(url,{method:"POST",headers:{"Authorization":"Bearer "+env.HF_TOKEN,"Content-Type":"application/json","Accept":"*/*"},body:JSON.stringify(payload)})}
+async function providerCall(provider,model,payload,task){
+const url=`https://router.huggingface.co/${provider}/v1/${task}/${model}`;
+return fetch(url,{method:"POST",headers:{"Authorization":"Bearer "+env.HF_TOKEN,"Content-Type":"application/json","Accept":"*/*"},body:JSON.stringify(payload)})
+}
 async function normalizeMedia(r,type){const raw=await r.arrayBuffer(),ct=r.headers.get("content-type")||"";if(!r.ok)return {ok:false,status:r.status,details:new TextDecoder().decode(raw).slice(0,1600)};if(ct.startsWith(type+"/"))return {ok:true,url:await asDataUrl(raw,ct)};if(ct.includes("json")||ct.startsWith("text/")){let j;try{j=JSON.parse(new TextDecoder().decode(raw))}catch{return {ok:false,status:502,details:"Provider returned an unreadable response."}};let candidate=j?.video?.url||j?.image?.url||j?.output?.url||j?.url||(typeof j?.output==="string"?j.output:null)||(Array.isArray(j?.videos)&&j.videos[0]?.url)||(Array.isArray(j?.images)&&j.images[0]?.url);if(candidate)return {ok:true,url:candidate};return {ok:false,status:502,details:JSON.stringify(j).slice(0,1600)}}return {ok:false,status:502,details:"Unexpected content type: "+ct}}
 if(u.pathname==="/api/image"){
 const model=env.HF_IMAGE_MODEL||"black-forest-labs/FLUX.1-schnell";
